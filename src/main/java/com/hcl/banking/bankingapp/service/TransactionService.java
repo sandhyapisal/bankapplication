@@ -23,12 +23,15 @@ public class TransactionService {
 		String msg = "";
 		Optional<Account> opt = accRepository.findById(accId);
 		Account loginUserAcc = accRepository.findByUid(loginUserId);
-		if(opt!=null) {
+		if(opt.isPresent()) {
 			Account acc = opt.get();
 			
 			if(loginUserAcc.getBalance() >= amount) {
 				loginUserAcc.setBalance(loginUserAcc.getBalance()-amount);
 				acc.setBalance(acc.getBalance()+amount);
+				accRepository.save(loginUserAcc);
+				accRepository.save(acc);
+				msg = amount + "rs has been transfered successfully.";
 			}else {
 				msg = "Transaction amount should be less than your current balance.";
 			}
